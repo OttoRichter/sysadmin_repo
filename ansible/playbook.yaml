@@ -1,0 +1,22 @@
+--- 
+- name: Установка стандартных пакетов
+  hosts: all
+  roles:
+    - role: default-packages
+  tags:
+    - install_packages
+
+- name: Проксирующий nginx с порта 3000 на 80 другой ВМ
+  hosts: vm_2
+  roles:
+    - role: nginx_proxy
+  tags:
+    - nginx_proxy
+
+- name: Отдающий nginx 
+  hosts: vm_3
+  roles:
+    - role: nginx_giver
+  tags:
+    - nginx_giver
+

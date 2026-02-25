@@ -1,0 +1,19 @@
+- name: Исправить прерванную настройку dpkg
+  ansible.builtin.command: dpkg --configure -a
+  become: yes
+  # Чтобы задача не светилась как "changed" каждый раз:
+  changed_when: false 
+
+- name: Установка Nginx
+  ansible.builtin.apt:
+    update_cache: yes
+    name: "nginx"
+    state: present
+  become: true
+
+- name: Подмена веб-страницы
+  ansible.builtin.template:
+    src: index.j2
+    dest: /var/www/html/index.nginx-debian.html
+  become: true 
+  notify: "Nginx Reloader"

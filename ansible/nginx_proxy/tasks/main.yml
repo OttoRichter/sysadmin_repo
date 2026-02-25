@@ -1,0 +1,21 @@
+---
+# tasks file for nginx_proxy
+- name: Исправить прерванную настройку dpkg
+  ansible.builtin.command: dpkg --configure -a
+  become: yes
+  # Чтобы задача не светилась как "changed" каждый раз:
+  changed_when: false 
+
+- name: Установка Nginx
+  ansible.builtin.apt:
+    update_cache: yes
+    name: "nginx"
+    state: present
+  become: true
+
+- name: Проксирование с порта 3000 на порт 80 другой ВМ
+  ansible.builtin.template:
+    src: nginx.conf.j2
+    dest: /etc/nginx/sites-enabled/my_proxy.conf
+  become: true
+  notify: "Nginx Proxy"
